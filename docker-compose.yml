@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    container_name: ginja-claims-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Use postgres service name and same password/db as postgres container
+      DATABASE_URL: postgres://ginja:ginja_secret@postgres:5432/ginja_claims?sslmode=disable
+      JWT_SECRET: 5mO0i1gCw7wC9jwzF5+X8c1eC4b1H2pJ2o1zYvG7v1U=
+      ENVIRONMENT: development
+      HTTP_PORT: 8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ginja-postgres
+    environment:
+      POSTGRES_USER: ginja
+      POSTGRES_PASSWORD: ginja_secret
+      POSTGRES_DB: ginja_claims
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./internal/db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ginja -d ginja_claims"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
