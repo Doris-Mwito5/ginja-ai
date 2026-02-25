@@ -58,8 +58,8 @@ PostgreSQL with raw SQL queries (no ORM). This keeps queries explicit, predictab
 git clone https://github.com/Doris-Mwito5/ginja-ai.git
 cd ginja-ai
 
-# 2. Start the database
-docker-compose up -d postgres
+# 2. Build the dockerfile
+docker-compose up --build -d
 
 # 3. Run migrations
 make migrate
@@ -175,3 +175,4 @@ Authorization: Bearer <token>
 **Operations**
 - Add Kubernetes manifests with `HorizontalPodAutoscaler` for auto-scaling
 - The graceful shutdown is already implemented — extend it with a readiness probe so Kubernetes knows when the pod is ready to serve traffic
+
